@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+  <Product Name='FRCToolchain' Id='{DEC1F45F-2A07-4264-9C7F-C058891F03DA}'
+           UpgradeCode='{468A3C37-3DD8-4EBA-B789-DBE8BBC8329B}' Language='1033'
+           Codepage='1252' Version='14.1.0' Manufacturer='FIRST'>
+    
+    <Package Id='*' Keywords='Installer' Description='FIRST VxWorks Toolchain Installer'
+             Manufacturer='FIRST' InstallerVersion='100' Languages='1033'
+             Compressed='yes' SummaryCodepage='1252' InstallScope='perMachine' />
+    <Media Id='1' Cabinet='Files.cab' EmbedCab='yes' DiskPrompt='Disc 1' />
+    <Property Id='DiskPrompt' Value='FIRST VxWorks Toolchain Installer[1]' />
+    <Property Id='INSTALLDIR' Secure='yes'>
+      <RegistrySearch Id='INSTALLDIR' Root='HKLM'
+                      Key='Software\[Manufacturer]\[ProductName]'
+                      Name='INSTALLDIR' Type='directory' />
+    </Property>
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='INSTALLDIR' Name='FRC_Toolchain'>
+        <Component Id='VxWorksToolchainEnviron' Guid='{056AF460-DA96-445B-BD83-89746DEA7DBE}'>
+          <Environment Id='PATH' Name='PATH' Value='[INSTALLDIR]\mingw\bin' Permanent='no'
+                       Part='last' Action='set' System='yes' />
+          <Environment Id='WIND_BASE' Name='WIND_BASE' Value='[INSTALLDIR]\mingw\wind_base'
+                       Permanent='no' Part='all' Action='set' System='yes' />
+          <RegistryKey Root='HKLM' Key='Software\[Manufacturer]\[ProductName]' >
+            <RegistryValue Id='RegistryInstallValue' Type='string' Name='INSTALLDIR'
+                           Value='[INSTALLDIR]' />
+          </RegistryKey>
+          <RegistryKey Root='HKLM' Key='Software\Kitware\CMake\Packages\WPILib' >
+            <RegistryValue Id='WPILibRegistryKey' Type='string'  Name='ConfigLocation'
+                           Value='[INSTALLDIR]\mingw\share\WPILib\cmake' />
+          </RegistryKey>
+          <CreateFolder /> <!-- Force creation to get rid of error -->
+        </Component>
+      </Directory>
+    </Directory>
+    <Feature Id='Complete' Title='FRC Toolchain' Description='The complete toolchain'
+             Level='1' Display='expand' ConfigurableDirectory='INSTALLDIR'>
+      <Feature Id='Base' Title='Base Toolchain Files' Description='GCC, Binutils, Headers'
+             Level='1'>
+        <ComponentGroupRef Id='VxWorksToolchainGroup' />
+        <ComponentGroupRef Id='CMakeGroup' />
+        <ComponentRef Id='VxWorksToolchainEnviron' />
+      </Feature>
+    </Feature>
+    
+    <UI Id='ProjectUI'>
+      <UIRef Id='WixUI_InstallDir' />
+    </UI>
+    <UIRef Id='WixUI_ErrorProgressText' />
+    <Property Id='WIXUI_INSTALLDIR' Value='INSTALLDIR' />
+
+    <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
+    <!-- Other resources that can be added
+    <WixVariable Id="WixUIBannerBmp" Value="path\banner.bmp" /> 493x58 banner image
+    <WixVariable Id="WixUIDialogBmp" Value="path\dialog.bmp" /> 493x312 first page image
+    -->
+  </Product>
+</Wix>

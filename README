@@ -1,0 +1,19 @@
+BUILD REQUIREMENTS:
+
+A Linux Machine with:
+    mingw-w64
+    The entire linux version of the toolchain working
+
+A windows machine with:
+    wix
+    sed
+
+A directory both can access to put this in
+The internet.
+
+Steps to compile:
+    - Run prepare.sh on the linux machine
+    - Run make -f linux.mk on the linux machine
+    - Run mingw32-make -f windows.mk on the windows machine
+
+
