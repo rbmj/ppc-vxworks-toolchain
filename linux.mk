@@ -168,7 +168,7 @@ stmp-install-gcc-target: stmp-build-gcc-target
 
 $(WPILIB_BUILDDIR)/Makefile: stmp-extract-wpilib
 	mkdir -p $(WPILIB_BUILDDIR)
-	cd $(WPILIB_BUILDDIR) ; frcmake $(WPILIB_SRCDIR) -DCMAKE_INSTALL_PREFIX=$(PREFIX)
+	cd $(WPILIB_BUILDDIR) ; frcmake $(WPILIB_SRCDIR) -DCMAKE_INSTALL_PREFIX=$(PREFIX)/$(TARGET)
 
 stmp-build-wpilib: $(WPILIB_BUILDDIR)/Makefile
 	cd $(WPILIB_BUILDDIR) ; make -j4
@@ -252,6 +252,10 @@ SED_EXTRACTNAME=ssed.exe
 SED_FNAME=sed-3.62.zip
 SED_ORIG_ARCHIVE=$(WINDIR)/$(SED_FNAME)
 SED_DOWNLOAD_URL=http://sed.sourceforge.net/grabbag/ssed/$(SED_FNAME)
+WPUT_FNAME=wput-pre0.6.zip
+WPUT_ORIG_ARCHIVE=$(WINDIR)/$(WPUT_FNAME)
+WPUT_DOWNLOAD_URL=http://downloads.sourceforge.net/project/wput/wput/pre0.6/$(WPUT_FNAME)
+WPUT_FOLDER=$(WINDIR)/wput
 
 stmp-download-cmake:
 	wget -O $(CMAKE_ORIG_ARCHIVE) $(CMAKE_DOWNLOAD_URL)
@@ -275,9 +279,19 @@ stmp-download-tclkit:
 	wget -O $(WINDIR)/$(TCLKIT_FNAME) $(TCLKIT_DOWNLOAD_URL)
 	touch stmp-download-tclkit
 
-stmp-install-tools: stmp-download-tclkit stmp-extract-sed
+stmp-download-wput:
+	wget -O $(WPUT_ORIG_ARCHIVE) $(WPUT_DOWNLOAD_URL)
+	touch stmp-download-wput
+
+stmp-extract-wput:
+	mkdir -p $(WPUT_FOLDER)
+	cd $(WPUT_FOLDER) ; unzip -qo $(WPUT_ORIG_ARCHIVE)
+	touch stmp-extract-wput
+
+stmp-install-tools: stmp-download-tclkit stmp-extract-sed stmp-download-wput
 	cd $(WINDIR) ; \
 		cp $(TCLKIT_FNAME) $(INSTALL_BASE_DIR)/bin/tclsh.exe ; \
-		cp $(SED_EXTRACTNAME) $(INSTALL_BASE_DIR)/bin/sed.exe
+		cp $(SED_EXTRACTNAME) $(INSTALL_BASE_DIR)/bin/sed.exe 
 	cp -r mingw_tools/. $(INSTALL_BASE_DIR)/bin
+	cp -r $(WPUT_FOLDER)/. $(INSTALL_BASE_DIR)/bin
 	touch stmp-install-tools

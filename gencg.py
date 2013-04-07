@@ -17,12 +17,13 @@ def stripPrefix(dir):
 def getDirID(dir):
 	m = hashlib.md5()
 	m.update(dir.encode('utf-8'))
-	return "dir" + cg_name + m.hexdigest()
+	return "dir" + cg_name + m.hexdigest() + str(len(dir))
 
-def getFileID(f):
+def getFileID(f, dir):
 	m = hashlib.md5()
+	m.update(dir.encode('utf-8')) # need a bit more entropy...
 	m.update(f.encode('utf-8'))
-	return cg_name + m.hexdigest()
+	return cg_name + m.hexdigest() + str(len(f))
 
 root_id = getDirID(search_root)
 
@@ -43,7 +44,7 @@ def addDir(dir):
 	
 def addFile(dir, fname):
 	parent_id = addDir(dir)
-	file_id = getFileID(fname)
+	file_id = getFileID(fname, dir)
 	dir = dir.replace("/", "\\") # in case we're on unix
 	filelist[file_id] = (file_id, parent_id, "SourceDir\\" + dir + '\\' + fname)
 
