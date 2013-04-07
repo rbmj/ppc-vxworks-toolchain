@@ -288,7 +288,7 @@ stmp-extract-wput:
 	cd $(WPUT_FOLDER) ; unzip -qo $(WPUT_ORIG_ARCHIVE)
 	touch stmp-extract-wput
 
-stmp-install-tools: stmp-download-tclkit stmp-extract-sed stmp-download-wput
+stmp-install-tools: stmp-download-tclkit stmp-extract-sed stmp-extract-wput
 	cd $(WINDIR) ; \
 		cp $(TCLKIT_FNAME) $(INSTALL_BASE_DIR)/bin/tclsh.exe ; \
 		cp $(SED_EXTRACTNAME) $(INSTALL_BASE_DIR)/bin/sed.exe 
