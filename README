@@ -3,12 +3,12 @@ BUILD REQUIREMENTS:
 A Linux Machine with:
  - mingw-w64
  - The entire linux version of the toolchain working
- - standard build utilities.
+ - standard build utilities
 
 A windows machine with:
  - wix
  - make (or mingw32-make)
- - python (3+ or 2.7+ supported)
+ - sed
 
 A directory both can access to put this in (3.5 GB disk space required).
 Internet access.
@@ -22,13 +22,10 @@ This will result in a MSI in the directory.
 
 Currently, installation takes up about 500MB on the final machine.
 
+During installation, make sure to change the installation path to a directory
+name without spaces in it or CMake won't work (such as C:\FRC_Toolchain).
+
 TODO:
- - Fix strange error where buildscripts feels the need to constantly reinstall
-   itself (priority: low)
- - Download make binary from [1] instead of bundling a copy (priority: low)
+ - Fix CMake handling spaces in directory names improperly (priority: low)
  - Test (priority: high)
  - Get proper upgrade semantics for new versions (priority: high)
- - Figure out why heat crashes so that we don't have to roll our own script
-   with python (priority: low - as long as the script works...)
-
-[1]:  http://downloads.sourceforge.net/project/mingw/MinGW/Extension/make/make-3.82-mingw32/make-3.82-5-mingw32-bin.tar.lzma

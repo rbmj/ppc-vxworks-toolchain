@@ -16,8 +16,8 @@ TARGET=powerpc-wrs-vxworks
 WINDIR=$(CURDIR)/win32
 INSTALLDIR=$(WINDIR)/install-prefix
 
-GCC_DOWNLOAD_URL=http://ftp.gnu.org/gnu/gcc/gcc-4.8.0/gcc-4.8.0.tar.gz
-GCC_EXTRACTNAME=gcc-4.8.0
+GCC_DOWNLOAD_URL=http://ftp.gnu.org/gnu/gcc/gcc-4.8.1/gcc-4.8.1.tar.gz
+GCC_EXTRACTNAME=gcc-4.8.1
 
 BINUTILS_DOWNLOAD_URL=http://ftp.gnu.org/gnu/binutils/binutils-2.23.1.tar.gz
 BINUTILS_EXTRACTNAME=binutils-2.23.1
@@ -140,6 +140,8 @@ stmp-install-gcc-host: stmp-build-gcc-host
 
 $(GCC_LINUXDIR)/Makefile: stmp-extract-gcc
 	mkdir -p $(GCC_LINUXDIR)
+
+	export CFLAGS_FOR_TARGET="-g -O2 -mlongcall"
 	cd $(GCC_LINUXDIR) ; $(GCC_SRCDIR)/configure \
 		--prefix=$(PREFIX) \
 		--target=$(TARGET) \
@@ -156,7 +158,8 @@ $(GCC_LINUXDIR)/Makefile: stmp-extract-gcc
 		--disable-libgomp \
 		--disable-libmudflap \
 		--with-cpu-PPC603 \
-		--disable-symvers
+		--disable-symvers \
+		--enable-cxx-flags=-mlongcall
 
 stmp-build-gcc-target: $(GCC_LINUXDIR)/Makefile
 	cd $(GCC_LINUXDIR) ; make -j4
@@ -256,6 +259,10 @@ WPUT_FNAME=wput-pre0.6.zip
 WPUT_ORIG_ARCHIVE=$(WINDIR)/$(WPUT_FNAME)
 WPUT_DOWNLOAD_URL=http://downloads.sourceforge.net/project/wput/wput/pre0.6/$(WPUT_FNAME)
 WPUT_FOLDER=$(WINDIR)/wput
+MAKE_FNAME=make-3.82-5-mingw32-bin.tar.lzma
+MAKE_ORIG_ARCHIVE=$(WINDIR)/$(MAKE_FNAME)
+MAKE_DOWNLOAD_URL=http://downloads.sourceforge.net/project/mingw/MinGW/Extension/make/make-3.82-mingw32/$(MAKE_FNAME)
+MAKE_FOLDER=$(WINDIR)/mingw32-make
 
 stmp-download-cmake:
 	wget -O $(CMAKE_ORIG_ARCHIVE) $(CMAKE_DOWNLOAD_URL)
@@ -283,15 +290,25 @@ stmp-download-wput:
 	wget -O $(WPUT_ORIG_ARCHIVE) $(WPUT_DOWNLOAD_URL)
 	touch stmp-download-wput
 
-stmp-extract-wput:
+stmp-extract-wput: stmp-download-wput
 	mkdir -p $(WPUT_FOLDER)
 	cd $(WPUT_FOLDER) ; unzip -qo $(WPUT_ORIG_ARCHIVE)
 	touch stmp-extract-wput
 
-stmp-install-tools: stmp-download-tclkit stmp-extract-sed stmp-extract-wput
+stmp-download-make:
+	wget -O $(MAKE_ORIG_ARCHIVE) $(MAKE_DOWNLOAD_URL)
+	touch stmp-download-make
+
+stmp-extract-make: stmp-download-make
+	mkdir -p $(MAKE_FOLDER)
+	cd $(MAKE_FOLDER) ; tar --lzma -xvf $(MAKE_ORIG_ARCHIVE)
+	touch stmp-extract-make
+
+stmp-install-tools: stmp-download-tclkit stmp-extract-sed stmp-extract-wput stmp-extract-make
 	cd $(WINDIR) ; \
 		cp $(TCLKIT_FNAME) $(INSTALL_BASE_DIR)/bin/tclsh.exe ; \
 		cp $(SED_EXTRACTNAME) $(INSTALL_BASE_DIR)/bin/sed.exe 
 	cp -r mingw_tools/. $(INSTALL_BASE_DIR)/bin
 	cp -r $(WPUT_FOLDER)/. $(INSTALL_BASE_DIR)/bin
+	cp -r $(MAKE_FOLDER)/bin/. $(INSTALL_BASE_DIR)/bin
 	touch stmp-install-tools
