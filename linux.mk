@@ -2,19 +2,21 @@
 
 #final targets:
 all: \
+	stmp-gccdist-all \
 	stmp-install-binutils \
 	stmp-install-gcc-host \
 	stmp-install-gcc-target \
 	stmp-install-wpilib \
 	stmp-install-buildscripts \
 	stmp-install-tools \
-	stmp-extract-cmake \
-	stmp-gccdist-all
+	stmp-extract-cmake
 
 PREFIX=/mingw
 TARGET=powerpc-wrs-vxworks
 WINDIR=$(CURDIR)/win32
 INSTALLDIR=$(WINDIR)/install-prefix
+
+PATCHDIR=$(CURDIR)/patches
 
 GCC_DOWNLOAD_URL=http://ftp.gnu.org/gnu/gcc/gcc-4.8.1/gcc-4.8.1.tar.gz
 GCC_EXTRACTNAME=gcc-4.8.1
@@ -87,6 +89,7 @@ stmp-download-gccdist:
 
 stmp-extract-gccdist: stmp-download-gccdist
 	cd $(WINDIR) ; unzip -qo $(GCCDIST_ORIG_ARCHIVE)
+	find $(WINDIR)/gccdist -type f -exec dos2unix {} +
 	touch stmp-extract-gccdist
 
 $(BINUTILS_BUILDDIR)/Makefile: stmp-extract-binutils
@@ -215,12 +218,12 @@ stmp-gccdist-directories: stmp-extract-gccdist
 GCCDIST_ARCHIVE_BASE=$(WINDIR)/gccdist/WindRiver/vxworks-6.3
 
 stmp-gccdist-scripts: stmp-gccdist-directories
-	cp -R $(GCCDIST_ARCHIVE_BASE)/host $(WIND_BASE)
+	cp -dpr --no-preserve=ownership $(GCCDIST_ARCHIVE_BASE)/host $(WIND_BASE)
 	touch stmp-gccdist-scripts
 
 stmp-gccdist-headers: stmp-gccdist-directories
-	cp -R $(GCCDIST_ARCHIVE_BASE)/target/h/. $(TOOL_DIR)/sys-include
-	cp -R $(GCCDIST_ARCHIVE_BASE)/target/h/wrn/coreip/. $(WIND_BASE)/target/h
+	cp -dpr --no-preserve=ownership $(GCCDIST_ARCHIVE_BASE)/target/h/. $(TOOL_DIR)/sys-include
+	cp -r $(TOOL_DIR)/wrn/coreip/. $(WIND_BASE)/target/h
 	touch stmp-gccdist-headers
 
 
