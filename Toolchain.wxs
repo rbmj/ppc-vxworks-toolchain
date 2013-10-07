@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<Wix xmlns='http://wixtoolset.org/schemas/v4/wxs'>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
   <Product Name='FRCToolchain' Id='{DEC1F45F-2A07-4264-9C7F-C058891F03DA}'
            UpgradeCode='{468A3C37-3DD8-4EBA-B789-DBE8BBC8329B}' Language='1033'
            Codepage='1252' Version='14.1.0' Manufacturer='FIRST'>
