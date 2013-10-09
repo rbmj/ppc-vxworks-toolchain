@@ -40,11 +40,11 @@
       <Feature Id='Base' Title='Base Toolchain Files' Description='GCC, Binutils, Headers'
              Level='1'>
         <ComponentGroupRef Id='VxWorksToolchainGroup' />
-        <ComponentGroupRef Id='CMakeGroup.wxs' />
+        <ComponentGroupRef Id='CMakeGroup' />
         <ComponentRef Id='VxWorksToolchainEnviron' />
       </Feature>
     </Feature>
-    
+
     <UI Id='ProjectUI'>
       <UIRef Id='WixUI_InstallDir' />
     </UI>

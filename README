@@ -8,7 +8,6 @@ A Linux Machine with:
 A windows machine with:
  - wix
  - make (or mingw32-make)
- - sed
 
 A directory both can access to put this in (3.5 GB disk space required).
 Internet access.
