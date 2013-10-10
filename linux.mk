@@ -258,10 +258,27 @@ SED_EXTRACTNAME=ssed.exe
 SED_FNAME=sed-3.62.zip
 SED_ORIG_ARCHIVE=$(WINDIR)/$(SED_FNAME)
 SED_DOWNLOAD_URL=http://sed.sourceforge.net/grabbag/ssed/$(SED_FNAME)
+
 WPUT_FNAME=wput-pre0.6.zip
 WPUT_ORIG_ARCHIVE=$(WINDIR)/$(WPUT_FNAME)
 WPUT_DOWNLOAD_URL=http://downloads.sourceforge.net/project/wput/wput/pre0.6/$(WPUT_FNAME)
 WPUT_FOLDER=$(WINDIR)/wput
+
+LIBICONV_FNAME=libiconv-1.14-2-mingw32-dll-2.tar.lzma
+LIBICONV_ORIG_ARCHIVE=$(WINDIR)/$(LIBICONV_FNAME)
+LIBICONV_DOWNLOAD_URL=http://downloads.sourceforge.net/project/mingw/MinGW/Base/libiconv/libiconv-1.14-2/$(LIBICONV_FNAME)
+LIBICONV_FOLDER=$(WINDIR)/libiconv
+
+LIBINTL_FNAME=libintl-0.18.1.1-2-mingw32-dll-8.tar.lzma
+LIBINTL_ORIG_ARCHIVE=$(WINDIR)/$(LIBINTL_FNAME)
+LIBINTL_DOWNLOAD_URL=http://downloads.sourceforge.net/project/mingw/MinGW/Base/gettext/gettext-0.18.1.1-2/$(LIBINTL_FNAME)
+LIBINTL_FOLDER=$(WINDIR)/libintl
+
+LIBGCC_FNAME=libgcc-4.7.2-1-mingw32-dll-1.tar.lzma
+LIBGCC_ORIG_ARCHIVE=$(WINDIR)/$(LIBGCC_FNAME)
+LIBGCC_DOWNLOAD_URL=http://downloads.sourceforge.net/project/mingw/MinGW/Base/gcc/Version4/gcc-4.7.2-1/$(LIBGCC_FNAME)
+LIBGCC_FOLDER=$(WINDIR)/libgcc
+
 MAKE_FNAME=make-3.82-5-mingw32-bin.tar.lzma
 MAKE_ORIG_ARCHIVE=$(WINDIR)/$(MAKE_FNAME)
 MAKE_DOWNLOAD_URL=http://downloads.sourceforge.net/project/mingw/MinGW/Extension/make/make-3.82-mingw32/$(MAKE_FNAME)
@@ -298,6 +315,33 @@ stmp-extract-wput: stmp-download-wput
 	cd $(WPUT_FOLDER) ; unzip -qo $(WPUT_ORIG_ARCHIVE)
 	touch stmp-extract-wput
 
+stmp-download-libiconv:
+	wget -O $(LIBICONV_ORIG_ARCHIVE) $(LIBICONV_DOWNLOAD_URL)
+	touch stmp-download-libiconv
+
+stmp-extract-libiconv: stmp-download-libiconv
+	mkdir -p $(LIBICONV_FOLDER)
+	cd $(LIBICONV_FOLDER) ; tar --lzma -xvf $(LIBICONV_ORIG_ARCHIVE)
+	touch stmp-extract-libiconv
+
+stmp-download-libintl:
+	wget -O $(LIBINTL_ORIG_ARCHIVE) $(LIBINTL_DOWNLOAD_URL)
+	touch stmp-download-libintl
+
+stmp-extract-libintl: stmp-download-libintl
+	mkdir -p $(LIBINTL_FOLDER)
+	cd $(LIBINTL_FOLDER) ; tar --lzma -xvf $(LIBINTL_ORIG_ARCHIVE)
+	touch stmp-extract-libintl
+
+stmp-download-libgcc:
+	wget -O $(LIBGCC_ORIG_ARCHIVE) $(LIBGCC_DOWNLOAD_URL)
+	touch stmp-download-libgcc
+
+stmp-extract-libgcc: stmp-download-libgcc
+	mkdir -p $(LIBGCC_FOLDER)
+	cd $(LIBGCC_FOLDER) ; tar --lzma -xvf $(LIBGCC_ORIG_ARCHIVE)
+	touch stmp-extract-libgcc
+
 stmp-download-make:
 	wget -O $(MAKE_ORIG_ARCHIVE) $(MAKE_DOWNLOAD_URL)
 	touch stmp-download-make
@@ -307,11 +351,13 @@ stmp-extract-make: stmp-download-make
 	cd $(MAKE_FOLDER) ; tar --lzma -xvf $(MAKE_ORIG_ARCHIVE)
 	touch stmp-extract-make
 
-stmp-install-tools: stmp-download-tclkit stmp-extract-sed stmp-extract-wput stmp-extract-make
+stmp-install-tools: stmp-download-tclkit stmp-extract-sed stmp-extract-wput stmp-extract-libiconv stmp-extract-libintl stmp-extract-libgcc stmp-extract-make
 	cd $(WINDIR) ; \
 		cp $(TCLKIT_FNAME) $(INSTALL_BASE_DIR)/bin/tclsh.exe ; \
 		cp $(SED_EXTRACTNAME) $(INSTALL_BASE_DIR)/bin/sed.exe 
-	cp -r mingw_tools/. $(INSTALL_BASE_DIR)/bin
 	cp -r $(WPUT_FOLDER)/. $(INSTALL_BASE_DIR)/bin
+	cp -r $(LIBICONV_FOLDER)/bin/. $(INSTALL_BASE_DIR)/bin
+	cp -r $(LIBINTL_FOLDER)/bin/. $(INSTALL_BASE_DIR)/bin
+	cp -r $(LIBGCC_FOLDER)/bin/. $(INSTALL_BASE_DIR)/bin
 	cp -r $(MAKE_FOLDER)/bin/. $(INSTALL_BASE_DIR)/bin
 	touch stmp-install-tools
