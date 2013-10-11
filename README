@@ -21,10 +21,7 @@ This will result in a MSI in the directory.
 
 Currently, installation takes up about 500MB on the final machine.
 
-During installation, make sure to change the installation path to a directory
-name without spaces in it or CMake won't work (such as C:\FRC_Toolchain).
-
 TODO:
- - Fix CMake handling spaces in directory names improperly (priority: low)
  - Test (priority: high)
+ - Fix "Relocation value does not fit in 24 bits." error on 8 slot cRIOs (priority: high)
  - Get proper upgrade semantics for new versions (priority: high)

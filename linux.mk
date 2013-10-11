@@ -2,14 +2,14 @@
 
 #final targets:
 all: \
-	stmp-gccdist-all \
-	stmp-install-binutils \
-	stmp-install-gcc-host \
-	stmp-install-gcc-target \
-	stmp-install-wpilib \
-	stmp-install-buildscripts \
-	stmp-install-tools \
-	stmp-extract-cmake
+	stmp/gccdist-all \
+	stmp/install-binutils \
+	stmp/install-gcc-host \
+	stmp/install-gcc-target \
+	stmp/install-wpilib \
+	stmp/install-buildscripts \
+	stmp/install-tools \
+	stmp/extract-cmake
 
 PREFIX=/mingw
 TARGET=powerpc-wrs-vxworks
@@ -55,44 +55,44 @@ TOOL_DIR=$(INSTALL_BASE_DIR)/powerpc-wrs-vxworks
 WIND_BASE=$(TOOL_DIR)/wind_base
 LDSCRIPT_DIR=$(TOOL_DIR)/share/ldscripts
 
-stmp-download-binutils:
+stmp/download-binutils:
 	wget -O $(BINUTILS_ORIG_ARCHIVE) $(BINUTILS_DOWNLOAD_URL)
-	touch stmp-download-binutils
+	touch stmp/download-binutils
 
-stmp-extract-binutils: stmp-download-binutils
+stmp/extract-binutils: stmp/download-binutils
 	cd $(WINDIR) ; tar -xf $(BINUTILS_ORIG_ARCHIVE)
-	touch stmp-extract-binutils
+	touch stmp/extract-binutils
 
-stmp-download-gcc:
+stmp/download-gcc:
 	wget -O $(GCC_ORIG_ARCHIVE) $(GCC_DOWNLOAD_URL)
-	touch stmp-download-gcc
+	touch stmp/download-gcc
 
-stmp-prelim-extract-gcc: stmp-download-gcc
+stmp/prelim-extract-gcc: stmp/download-gcc
 	cd $(WINDIR) ; tar -xf $(GCC_ORIG_ARCHIVE)
-	touch stmp-prelim-extract-gcc
+	touch stmp/prelim-extract-gcc
 
-stmp-extract-gcc: stmp-prelim-extract-gcc
+stmp/extract-gcc: stmp/prelim-extract-gcc
 	cd $(GCC_SRCDIR) ; ./contrib/download_prerequisites
-	touch stmp-extract-gcc
+	touch stmp/extract-gcc
 
-stmp-download-wpilib:
+stmp/download-wpilib:
 	wget -O $(WPILIB_ORIG_ARCHIVE) $(WPILIB_DOWNLOAD_URL)
-	touch stmp-download-wpilib
+	touch stmp/download-wpilib
 
-stmp-extract-wpilib: stmp-download-wpilib
+stmp/extract-wpilib: stmp/download-wpilib
 	cd $(WINDIR) ; unzip -qo $(WPILIB_ORIG_ARCHIVE)
-	touch stmp-extract-wpilib
+	touch stmp/extract-wpilib
 
-stmp-download-gccdist:
+stmp/download-gccdist:
 	wget -O $(GCCDIST_ORIG_ARCHIVE) $(GCCDIST_DOWNLOAD_URL)
-	touch stmp-download-gccdist
+	touch stmp/download-gccdist
 
-stmp-extract-gccdist: stmp-download-gccdist
+stmp/extract-gccdist: stmp/download-gccdist
 	cd $(WINDIR) ; unzip -qo $(GCCDIST_ORIG_ARCHIVE)
 	find $(WINDIR)/gccdist -type f -exec dos2unix {} +
-	touch stmp-extract-gccdist
+	touch stmp/extract-gccdist
 
-$(BINUTILS_BUILDDIR)/Makefile: stmp-extract-binutils
+$(BINUTILS_BUILDDIR)/Makefile: stmp/extract-binutils
 	mkdir -p $(BINUTILS_BUILDDIR)
 	cd $(BINUTILS_BUILDDIR) ; $(BINUTILS_SRCDIR)/configure \
 		--prefix=$(PREFIX) \
@@ -100,15 +100,15 @@ $(BINUTILS_BUILDDIR)/Makefile: stmp-extract-binutils
 		--target=$(TARGET) \
 		--host=i686-w64-mingw32
 
-stmp-build-binutils: $(BINUTILS_BUILDDIR)/Makefile
+stmp/build-binutils: $(BINUTILS_BUILDDIR)/Makefile
 	cd $(BINUTILS_BUILDDIR) ; make -j4
-	touch stmp-build-binutils
+	touch stmp/build-binutils
 
-stmp-install-binutils: stmp-build-binutils
+stmp/install-binutils: stmp/build-binutils
 	cd $(BINUTILS_BUILDDIR) ; make install DESTDIR=$(INSTALLDIR)
-	touch stmp-install-binutils
+	touch stmp/install-binutils
 
-$(GCC_BUILDDIR)/Makefile: stmp-extract-gcc
+$(GCC_BUILDDIR)/Makefile: stmp/extract-gcc
 	mkdir -p $(GCC_BUILDDIR)
 	cd $(GCC_BUILDDIR) ; $(GCC_SRCDIR)/configure \
 		--prefix=$(PREFIX) \
@@ -130,18 +130,18 @@ $(GCC_BUILDDIR)/Makefile: stmp-extract-gcc
 		--with-cpu-PPC603 \
 		--disable-symvers
 
-stmp-build-gcc-host: $(GCC_BUILDDIR)/Makefile
+stmp/build-gcc-host: $(GCC_BUILDDIR)/Makefile
 	cd $(GCC_BUILDDIR) ; make all-host -j4
-	touch stmp-build-gcc-host
+	touch stmp/build-gcc-host
 
-stmp-install-gcc-host: stmp-build-gcc-host
+stmp/install-gcc-host: stmp/build-gcc-host
 	cd $(GCC_BUILDDIR) ; make install-host DESTDIR=$(INSTALLDIR)
-	touch stmp-install-gcc-host
+	touch stmp/install-gcc-host
 
 #GCC has trouble building target libraries in a canadian cross configuration
 #so brute-force solution is just build two compilers...
 
-$(GCC_LINUXDIR)/Makefile: stmp-extract-gcc
+$(GCC_LINUXDIR)/Makefile: stmp/extract-gcc
 	mkdir -p $(GCC_LINUXDIR)
 
 	export CFLAGS_FOR_TARGET="-g -O2 -mlongcall"
@@ -164,48 +164,48 @@ $(GCC_LINUXDIR)/Makefile: stmp-extract-gcc
 		--disable-symvers \
 		--enable-cxx-flags=-mlongcall
 
-stmp-build-gcc-target: $(GCC_LINUXDIR)/Makefile
+stmp/build-gcc-target: $(GCC_LINUXDIR)/Makefile
 	cd $(GCC_LINUXDIR) ; make -j4
-	touch stmp-build-gcc-target
+	touch stmp/build-gcc-target
 
-stmp-install-gcc-target: stmp-build-gcc-target
+stmp/install-gcc-target: stmp/build-gcc-target
 	cd $(GCC_LINUXDIR) ; make install-target DESTDIR=$(INSTALLDIR)
-	touch stmp-install-gcc-target
+	touch stmp/install-gcc-target
 
-$(WPILIB_BUILDDIR)/Makefile: stmp-extract-wpilib
+$(WPILIB_BUILDDIR)/Makefile: stmp/extract-wpilib
 	mkdir -p $(WPILIB_BUILDDIR)
 	cd $(WPILIB_BUILDDIR) ; frcmake $(WPILIB_SRCDIR) -DCMAKE_INSTALL_PREFIX=$(PREFIX)/$(TARGET)
 
-stmp-build-wpilib: $(WPILIB_BUILDDIR)/Makefile
+stmp/build-wpilib: $(WPILIB_BUILDDIR)/Makefile
 	cd $(WPILIB_BUILDDIR) ; make -j4
-	touch stmp-build-wpilib
+	touch stmp/build-wpilib
 
-stmp-install-wpilib: stmp-build-wpilib
+stmp/install-wpilib: stmp/build-wpilib
 	cd $(WPILIB_BUILDDIR) ; make install DESTDIR=$(INSTALLDIR)
-	touch stmp-install-wpilib
+	touch stmp/install-wpilib
 
 $(BUILDSCRIPTS_ORIG_ARCHIVE):
 	wget -O $(BUILDSCRIPTS_ORIG_ARCHIVE) $(BUILDSCRIPTS_DOWNLOAD_URL)
 
-stmp-extract-buildscripts: $(BUILDSCRIPTS_ORIG_ARCHIVE)
+stmp/extract-buildscripts: $(BUILDSCRIPTS_ORIG_ARCHIVE)
 	cd $(WINDIR) ; unzip -qo $(BUILDSCRIPTS_ORIG_ARCHIVE)
-	touch stmp-extract-buildscripts
+	touch stmp/extract-buildscripts
 
-$(BUILDSCRIPTS_BUILDDIR)/Makefile: stmp-extract-buildscripts
+$(BUILDSCRIPTS_BUILDDIR)/Makefile: stmp/extract-buildscripts
 	mkdir -p $(BUILDSCRIPTS_BUILDDIR)
 	cd $(BUILDSCRIPTS_BUILDDIR) ; cmake $(BUILDSCRIPTS_SRCDIR) -DCROSS_BUILD_WINDOWS=1
 
-stmp-build-buildscripts: $(BUILDSCRIPTS_BUILDDIR)/Makefile
+stmp/build-buildscripts: $(BUILDSCRIPTS_BUILDDIR)/Makefile
 	cd $(BUILDSCRIPTS_BUILDDIR) ; make
-	touch stmp-build-buildscripts
+	touch stmp/build-buildscripts
 
-stmp-install-buildscripts: stmp-build-buildscripts
+stmp/install-buildscripts: stmp/build-buildscripts
 	cd $(BUILDSCRIPTS_BUILDDIR) ; make install DESTDIR=$(INSTALLDIR)
-	touch stmp-install-buildscripts
+	touch stmp/install-buildscripts
 
 ### GCCDIST STUFF ###
 
-stmp-gccdist-directories: stmp-extract-gccdist
+stmp/gccdist-directories: stmp/extract-gccdist
 	mkdir -p \
 		$(TOOL_DIR) \
 		$(WIND_BASE) \
@@ -213,36 +213,36 @@ stmp-gccdist-directories: stmp-extract-gccdist
 		$(TOOL_DIR)/sys-include \
 		$(WIND_BASE)/target/h \
 		$(INSTALL_BASE_DIR)/licenses
-	touch stmp-gccdist-directories
+	touch stmp/gccdist-directories
 
 GCCDIST_ARCHIVE_BASE=$(WINDIR)/gccdist/WindRiver/vxworks-6.3
 
-stmp-gccdist-scripts: stmp-gccdist-directories
+stmp/gccdist-scripts: stmp/gccdist-directories
 	cp -dpr --no-preserve=ownership $(GCCDIST_ARCHIVE_BASE)/host $(WIND_BASE)
-	touch stmp-gccdist-scripts
+	touch stmp/gccdist-scripts
 
-stmp-gccdist-headers: stmp-gccdist-directories
+stmp/gccdist-headers: stmp/gccdist-directories
 	cp -dpr --no-preserve=ownership $(GCCDIST_ARCHIVE_BASE)/target/h/. $(TOOL_DIR)/sys-include
 	cp -r $(TOOL_DIR)/wrn/coreip/. $(WIND_BASE)/target/h
 	touch stmp-gccdist-headers
+	touch stmp/gccdist-headers
 
-
-$(LDSCRIPT_DIR)/dkm.ld: stmp-gccdist-directories
+$(LDSCRIPT_DIR)/dkm.ld: stmp/gccdist-directories
 	sed '/ENTRY(_start)/d' < $(GCCDIST_ARCHIVE_BASE)/target/h/tool/gnu/ldscripts/link.OUT > $(LDSCRIPT_DIR)/dkm.ld
 
-$(INSTALL_BASE_DIR)/licenses/wrs_license.htm: stmp-gccdist-directories
+$(INSTALL_BASE_DIR)/licenses/wrs_license.htm: stmp/gccdist-directories
 	cp $(WINDIR)/gccdist/WindRiver/gnu/3.4.4-vxworks-6.3/license.htm $(INSTALL_BASE_DIR)/licenses/wrs_license.htm
 
-$(INSTALL_BASE_DIR)/licenses/gccdist_license.pdf: stmp-gccdist-directories
+$(INSTALL_BASE_DIR)/licenses/gccdist_license.pdf: stmp/gccdist-directories
 	cp $(WINDIR)/gccdist/WindRiver/gnu/3.4.4-vxworks-6.3/3rd_party_licensor_notice.pdf $(INSTALL_BASE_DIR)/licenses/gccdist_license.pdf
 
-stmp-gccdist-all: \
-	stmp-gccdist-scripts \
-	stmp-gccdist-headers \
+stmp/gccdist-all: \
+	stmp/gccdist-scripts \
+	stmp/gccdist-headers \
 	$(LDSCRIPT_DIR)/dkm.ld \
 	$(INSTALL_BASE_DIR)/licenses/wrs_license.htm \
 	$(INSTALL_BASE_DIR)/licenses/gccdist_license.pdf
-	touch stmp-gccdist-all
+	touch stmp/gccdist-all
 
 ### BINARY DEPENDENCIES ###
 
@@ -284,74 +284,74 @@ MAKE_ORIG_ARCHIVE=$(WINDIR)/$(MAKE_FNAME)
 MAKE_DOWNLOAD_URL=http://downloads.sourceforge.net/project/mingw/MinGW/Extension/make/make-3.82-mingw32/$(MAKE_FNAME)
 MAKE_FOLDER=$(WINDIR)/mingw32-make
 
-stmp-download-cmake:
+stmp/download-cmake:
 	wget -O $(CMAKE_ORIG_ARCHIVE) $(CMAKE_DOWNLOAD_URL)
-	touch stmp-download-cmake
+	touch stmp/download-cmake
 
-stmp-extract-cmake: stmp-download-cmake
+stmp/extract-cmake: stmp/download-cmake
 	cd $(WINDIR) ; unzip -qo $(CMAKE_ORIG_ARCHIVE)
 	mkdir -p $(INSTALLDIR)/cmake
 	cd $(WINDIR) ; cp -r $(CMAKE_EXTRACTNAME)/. $(INSTALLDIR)/cmake
-	touch stmp-extract-cmake
+	touch stmp/extract-cmake
 
-stmp-download-sed:
+stmp/download-sed:
 	wget -O $(SED_ORIG_ARCHIVE) $(SED_DOWNLOAD_URL)
-	touch stmp-download-sed
+	touch stmp/download-sed
 
-stmp-extract-sed: stmp-download-sed
+stmp/extract-sed: stmp/download-sed
 	cd $(WINDIR) ; unzip -qo $(SED_ORIG_ARCHIVE)
-	touch stmp-extract-sed
+	touch stmp/extract-sed
 
-stmp-download-tclkit:
+stmp/download-tclkit:
 	wget -O $(WINDIR)/$(TCLKIT_FNAME) $(TCLKIT_DOWNLOAD_URL)
-	touch stmp-download-tclkit
+	touch stmp/download-tclkit
 
-stmp-download-wput:
+stmp/download-wput:
 	wget -O $(WPUT_ORIG_ARCHIVE) $(WPUT_DOWNLOAD_URL)
-	touch stmp-download-wput
+	touch stmp/download-wput
 
-stmp-extract-wput: stmp-download-wput
+stmp/extract-wput: stmp/download-wput
 	mkdir -p $(WPUT_FOLDER)
 	cd $(WPUT_FOLDER) ; unzip -qo $(WPUT_ORIG_ARCHIVE)
-	touch stmp-extract-wput
+	touch stmp/extract-wput
 
-stmp-download-libiconv:
+stmp/download-libiconv:
 	wget -O $(LIBICONV_ORIG_ARCHIVE) $(LIBICONV_DOWNLOAD_URL)
-	touch stmp-download-libiconv
+	touch stmp/download-libiconv
 
-stmp-extract-libiconv: stmp-download-libiconv
+stmp/extract-libiconv: stmp/download-libiconv
 	mkdir -p $(LIBICONV_FOLDER)
 	cd $(LIBICONV_FOLDER) ; tar --lzma -xvf $(LIBICONV_ORIG_ARCHIVE)
-	touch stmp-extract-libiconv
+	touch stmp/extract-libiconv
 
-stmp-download-libintl:
+stmp/download-libintl:
 	wget -O $(LIBINTL_ORIG_ARCHIVE) $(LIBINTL_DOWNLOAD_URL)
-	touch stmp-download-libintl
+	touch stmp/download-libintl
 
-stmp-extract-libintl: stmp-download-libintl
+stmp/extract-libintl: stmp/download-libintl
 	mkdir -p $(LIBINTL_FOLDER)
 	cd $(LIBINTL_FOLDER) ; tar --lzma -xvf $(LIBINTL_ORIG_ARCHIVE)
-	touch stmp-extract-libintl
+	touch stmp/extract-libintl
 
-stmp-download-libgcc:
+stmp/download-libgcc:
 	wget -O $(LIBGCC_ORIG_ARCHIVE) $(LIBGCC_DOWNLOAD_URL)
-	touch stmp-download-libgcc
+	touch stmp/download-libgcc
 
-stmp-extract-libgcc: stmp-download-libgcc
+stmp/extract-libgcc: stmp/download-libgcc
 	mkdir -p $(LIBGCC_FOLDER)
 	cd $(LIBGCC_FOLDER) ; tar --lzma -xvf $(LIBGCC_ORIG_ARCHIVE)
-	touch stmp-extract-libgcc
+	touch stmp/extract-libgcc
 
-stmp-download-make:
+stmp/download-make:
 	wget -O $(MAKE_ORIG_ARCHIVE) $(MAKE_DOWNLOAD_URL)
-	touch stmp-download-make
+	touch stmp/download-make
 
-stmp-extract-make: stmp-download-make
+stmp/extract-make: stmp/download-make
 	mkdir -p $(MAKE_FOLDER)
 	cd $(MAKE_FOLDER) ; tar --lzma -xvf $(MAKE_ORIG_ARCHIVE)
-	touch stmp-extract-make
+	touch stmp/extract-make
 
-stmp-install-tools: stmp-download-tclkit stmp-extract-sed stmp-extract-wput stmp-extract-libiconv stmp-extract-libintl stmp-extract-libgcc stmp-extract-make
+stmp/install-tools: stmp/download-tclkit stmp/extract-sed stmp/extract-wput stmp/extract-libiconv stmp/extract-libintl stmp/extract-libgcc stmp/extract-make
 	cd $(WINDIR) ; \
 		cp $(TCLKIT_FNAME) $(INSTALL_BASE_DIR)/bin/tclsh.exe ; \
 		cp $(SED_EXTRACTNAME) $(INSTALL_BASE_DIR)/bin/sed.exe 
@@ -360,4 +360,4 @@ stmp-install-tools: stmp-download-tclkit stmp-extract-sed stmp-extract-wput stmp
 	cp -r $(LIBINTL_FOLDER)/bin/. $(INSTALL_BASE_DIR)/bin
 	cp -r $(LIBGCC_FOLDER)/bin/. $(INSTALL_BASE_DIR)/bin
 	cp -r $(MAKE_FOLDER)/bin/. $(INSTALL_BASE_DIR)/bin
-	touch stmp-install-tools
+	touch stmp/install-tools
