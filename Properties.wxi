@@ -1,0 +1,10 @@
+<Include>
+  <?define ProductName='FRCToolchain' ?>
+  <?define InstallerName='$(var.ProductName)Installer.msi' ?>
+  <?define ProductCode='{DEC1F45F-2A07-4264-9C7F-C058891F03DA}' ?>
+  <?define MsiUpgradeCode='{468A3C37-3DD8-4EBA-B789-DBE8BBC8329B}' ?>
+  <?define BundleUpgradeCode='{C10CEE83-DAD9-4C62-907F-9E4F26DB6B42}' ?>
+  <?define UpgradeType='MinorUpgrade' ?> <!-- Can be 'MajorUpgrade', 'MinorUpgrade', or 'SmallUpdate' -->
+  <?define Version='1.0.0' ?>
+  <?define Manufacturer='FIRST' ?>
+</Include>
