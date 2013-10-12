@@ -9,6 +9,7 @@ all: \
 	stmp/install-wpilib \
 	stmp/install-buildscripts \
 	stmp/install-tools \
+	stmp/copy-make \
 	stmp/extract-cmake
 
 PREFIX=/mingw
@@ -361,3 +362,10 @@ stmp/install-tools: stmp/download-tclkit stmp/extract-sed stmp/extract-wput stmp
 	cp -r $(LIBGCC_FOLDER)/bin/. $(INSTALL_BASE_DIR)/bin
 	cp -r $(MAKE_FOLDER)/bin/. $(INSTALL_BASE_DIR)/bin
 	touch stmp/install-tools
+
+stmp/copy-make: stmp/install-tools
+	cp $(INSTALL_BASE_DIR)/bin/mingw32-make.exe $(CURDIR)
+	cp $(INSTALL_BASE_DIR)/bin/libiconv-2.dll $(CURDIR)
+	cp $(INSTALL_BASE_DIR)/bin/libintl-8.dll $(CURDIR)
+	cp $(INSTALL_BASE_DIR)/bin/libgcc_s_dw2-1.dll $(CURDIR)
+	touch stmp/copy-make
