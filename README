@@ -12,7 +12,6 @@ A directory both can access to put this in (3.5 GB disk space required).
 Internet access.
 
 COMPILING:
- - Run prepare.sh on the linux machine
  - Run make -f linux.mk on the linux machine
  - Run mingw32-make -f windows.mk on the windows machine
 

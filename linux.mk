@@ -1,6 +1,7 @@
 #!/usr/bin/env make -f
 
 #final targets:
+.PHONY: all
 all: \
 	stmp/gccdist-all \
 	stmp/install-binutils \
@@ -11,6 +12,12 @@ all: \
 	stmp/install-tools \
 	stmp/copy-make \
 	stmp/extract-cmake
+
+.PHONY: clean
+clean:
+	rm -rf win32
+	rm -rf stmp
+	rm -rf wix-build
 
 PREFIX=/mingw
 TARGET=powerpc-wrs-vxworks
@@ -56,7 +63,13 @@ TOOL_DIR=$(INSTALL_BASE_DIR)/powerpc-wrs-vxworks
 WIND_BASE=$(TOOL_DIR)/wind_base
 LDSCRIPT_DIR=$(TOOL_DIR)/share/ldscripts
 
-stmp/download-binutils:
+stmp/prepare:
+	mkdir -p win32/install-prefix/mingw
+	mkdir -p stmp
+	mkdir -p wix-build
+	touch stmp/prepare
+
+stmp/download-binutils: stmp/prepare
 	wget -O $(BINUTILS_ORIG_ARCHIVE) $(BINUTILS_DOWNLOAD_URL)
 	touch stmp/download-binutils
 
@@ -64,7 +77,7 @@ stmp/extract-binutils: stmp/download-binutils
 	cd $(WINDIR) ; tar -xf $(BINUTILS_ORIG_ARCHIVE)
 	touch stmp/extract-binutils
 
-stmp/download-gcc:
+stmp/download-gcc: stmp/prepare
 	wget -O $(GCC_ORIG_ARCHIVE) $(GCC_DOWNLOAD_URL)
 	touch stmp/download-gcc
 
@@ -76,7 +89,7 @@ stmp/extract-gcc: stmp/prelim-extract-gcc
 	cd $(GCC_SRCDIR) ; ./contrib/download_prerequisites
 	touch stmp/extract-gcc
 
-stmp/download-wpilib:
+stmp/download-wpilib: stmp/prepare
 	wget -O $(WPILIB_ORIG_ARCHIVE) $(WPILIB_DOWNLOAD_URL)
 	touch stmp/download-wpilib
 
@@ -84,7 +97,7 @@ stmp/extract-wpilib: stmp/download-wpilib
 	cd $(WINDIR) ; unzip -qo $(WPILIB_ORIG_ARCHIVE)
 	touch stmp/extract-wpilib
 
-stmp/download-gccdist:
+stmp/download-gccdist: stmp/prepare
 	wget -O $(GCCDIST_ORIG_ARCHIVE) $(GCCDIST_DOWNLOAD_URL)
 	touch stmp/download-gccdist
 
@@ -185,7 +198,7 @@ stmp/install-wpilib: stmp/build-wpilib
 	cd $(WPILIB_BUILDDIR) ; make install DESTDIR=$(INSTALLDIR)
 	touch stmp/install-wpilib
 
-$(BUILDSCRIPTS_ORIG_ARCHIVE):
+$(BUILDSCRIPTS_ORIG_ARCHIVE): stmp/prepare
 	wget -O $(BUILDSCRIPTS_ORIG_ARCHIVE) $(BUILDSCRIPTS_DOWNLOAD_URL)
 
 stmp/extract-buildscripts: $(BUILDSCRIPTS_ORIG_ARCHIVE)
@@ -285,7 +298,7 @@ MAKE_ORIG_ARCHIVE=$(WINDIR)/$(MAKE_FNAME)
 MAKE_DOWNLOAD_URL=http://downloads.sourceforge.net/project/mingw/MinGW/Extension/make/make-3.82-mingw32/$(MAKE_FNAME)
 MAKE_FOLDER=$(WINDIR)/mingw32-make
 
-stmp/download-cmake:
+stmp/download-cmake: stmp/prepare
 	wget -O $(CMAKE_ORIG_ARCHIVE) $(CMAKE_DOWNLOAD_URL)
 	touch stmp/download-cmake
 
@@ -295,7 +308,7 @@ stmp/extract-cmake: stmp/download-cmake
 	cd $(WINDIR) ; cp -r $(CMAKE_EXTRACTNAME)/. $(INSTALLDIR)/cmake
 	touch stmp/extract-cmake
 
-stmp/download-sed:
+stmp/download-sed: stmp/prepare
 	wget -O $(SED_ORIG_ARCHIVE) $(SED_DOWNLOAD_URL)
 	touch stmp/download-sed
 
@@ -303,11 +316,11 @@ stmp/extract-sed: stmp/download-sed
 	cd $(WINDIR) ; unzip -qo $(SED_ORIG_ARCHIVE)
 	touch stmp/extract-sed
 
-stmp/download-tclkit:
+stmp/download-tclkit: stmp/prepare
 	wget -O $(WINDIR)/$(TCLKIT_FNAME) $(TCLKIT_DOWNLOAD_URL)
 	touch stmp/download-tclkit
 
-stmp/download-wput:
+stmp/download-wput: stmp/prepare
 	wget -O $(WPUT_ORIG_ARCHIVE) $(WPUT_DOWNLOAD_URL)
 	touch stmp/download-wput
 
@@ -316,7 +329,7 @@ stmp/extract-wput: stmp/download-wput
 	cd $(WPUT_FOLDER) ; unzip -qo $(WPUT_ORIG_ARCHIVE)
 	touch stmp/extract-wput
 
-stmp/download-libiconv:
+stmp/download-libiconv: stmp/prepare
 	wget -O $(LIBICONV_ORIG_ARCHIVE) $(LIBICONV_DOWNLOAD_URL)
 	touch stmp/download-libiconv
 
@@ -325,7 +338,7 @@ stmp/extract-libiconv: stmp/download-libiconv
 	cd $(LIBICONV_FOLDER) ; tar --lzma -xvf $(LIBICONV_ORIG_ARCHIVE)
 	touch stmp/extract-libiconv
 
-stmp/download-libintl:
+stmp/download-libintl: stmp/prepare
 	wget -O $(LIBINTL_ORIG_ARCHIVE) $(LIBINTL_DOWNLOAD_URL)
 	touch stmp/download-libintl
 
@@ -334,7 +347,7 @@ stmp/extract-libintl: stmp/download-libintl
 	cd $(LIBINTL_FOLDER) ; tar --lzma -xvf $(LIBINTL_ORIG_ARCHIVE)
 	touch stmp/extract-libintl
 
-stmp/download-libgcc:
+stmp/download-libgcc: stmp/prepare
 	wget -O $(LIBGCC_ORIG_ARCHIVE) $(LIBGCC_DOWNLOAD_URL)
 	touch stmp/download-libgcc
 
@@ -343,7 +356,7 @@ stmp/extract-libgcc: stmp/download-libgcc
 	cd $(LIBGCC_FOLDER) ; tar --lzma -xvf $(LIBGCC_ORIG_ARCHIVE)
 	touch stmp/extract-libgcc
 
-stmp/download-make:
+stmp/download-make: stmp/prepare
 	wget -O $(MAKE_ORIG_ARCHIVE) $(MAKE_DOWNLOAD_URL)
 	touch stmp/download-make
 
