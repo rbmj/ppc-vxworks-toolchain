@@ -2,14 +2,14 @@
 
 #final targets:
 all: \
+	stmp-gccdist-all \
 	stmp-install-binutils \
 	stmp-install-gcc-host \
 	stmp-install-gcc-target \
 	stmp-install-wpilib \
 	stmp-install-buildscripts \
 	stmp-install-tools \
-	stmp-extract-cmake \
-	stmp-gccdist-all
+	stmp-extract-cmake
 
 PREFIX=/mingw
 TARGET=powerpc-wrs-vxworks
@@ -92,7 +92,7 @@ stmp-extract-gccdist: stmp-download-gccdist
 $(BINUTILS_BUILDDIR)/Makefile: stmp-extract-binutils
 	mkdir -p $(BINUTILS_BUILDDIR)
 	cd $(BINUTILS_BUILDDIR) ; $(BINUTILS_SRCDIR)/configure \
-		--prefix=$(PREFIX) \
+		--prefix=$(INSTALLDIR)$(PREFIX) \
 		--build=$(shell $(BINUTILS_SRCDIR)/config.guess) \
 		--target=$(TARGET) \
 		--host=i686-w64-mingw32
@@ -102,13 +102,13 @@ stmp-build-binutils: $(BINUTILS_BUILDDIR)/Makefile
 	touch stmp-build-binutils
 
 stmp-install-binutils: stmp-build-binutils
-	cd $(BINUTILS_BUILDDIR) ; make install DESTDIR=$(INSTALLDIR)
+	cd $(BINUTILS_BUILDDIR) ; make install
 	touch stmp-install-binutils
 
 $(GCC_BUILDDIR)/Makefile: stmp-extract-gcc
 	mkdir -p $(GCC_BUILDDIR)
 	cd $(GCC_BUILDDIR) ; $(GCC_SRCDIR)/configure \
-		--prefix=$(PREFIX) \
+		--prefix=$(INSTALLDIR)$(PREFIX) \
 		--build=$(shell $(GCC_SRCDIR)/config.guess) \
 		--target=$(TARGET) \
 		--host=i686-w64-mingw32 \
@@ -132,7 +132,7 @@ stmp-build-gcc-host: $(GCC_BUILDDIR)/Makefile
 	touch stmp-build-gcc-host
 
 stmp-install-gcc-host: stmp-build-gcc-host
-	cd $(GCC_BUILDDIR) ; make install-host DESTDIR=$(INSTALLDIR)
+	cd $(GCC_BUILDDIR) ; make install-host
 	touch stmp-install-gcc-host
 
 #GCC has trouble building target libraries in a canadian cross configuration
@@ -141,7 +141,7 @@ stmp-install-gcc-host: stmp-build-gcc-host
 $(GCC_LINUXDIR)/Makefile: stmp-extract-gcc
 	mkdir -p $(GCC_LINUXDIR)
 	cd $(GCC_LINUXDIR) ; $(GCC_SRCDIR)/configure \
-		--prefix=$(PREFIX) \
+		--prefix=$(INSTALLDIR)$(PREFIX) \
 		--target=$(TARGET) \
 		--with-gnu-as \
 		--with-gnu-ld \
@@ -159,11 +159,11 @@ $(GCC_LINUXDIR)/Makefile: stmp-extract-gcc
 		--disable-symvers
 
 stmp-build-gcc-target: $(GCC_LINUXDIR)/Makefile
-	cd $(GCC_LINUXDIR) ; make -j4
+	cd $(GCC_LINUXDIR) ; make all-target -j4
 	touch stmp-build-gcc-target
 
 stmp-install-gcc-target: stmp-build-gcc-target
-	cd $(GCC_LINUXDIR) ; make install-target DESTDIR=$(INSTALLDIR)
+	cd $(GCC_LINUXDIR) ; make install-target
 	touch stmp-install-gcc-target
 
 $(WPILIB_BUILDDIR)/Makefile: stmp-extract-wpilib
