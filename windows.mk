@@ -17,7 +17,12 @@ GENERATE_CG=VxWorksToolchainGroup
 CMAKE_HARVEST=win32\\install-prefix\\cmake
 CMAKE_CG=CMakeGroup
 
+.PHONY: all
 all: $(BUILD_DIR)\\$(BUNDLENAME)
+
+.PHONY: clean
+clean:
+	del /F /Q $(BUILD_DIR)\\*
 
 $(BUILD_DIR)\\$(GENERATE_CG).wxs:
 	$(HEAT) dir $(HARVEST_DIR) -sreg -ag -dr INSTALLDIR -cg $(GENERATE_CG) -var var.HarvestDir -out $(BUILD_DIR)\\$(GENERATE_CG).wxs
