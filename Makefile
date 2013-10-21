@@ -117,7 +117,7 @@ stmp/build-binutils: $(BINUTILS_BUILDDIR)/Makefile
 	touch stmp/build-binutils
 
 stmp/install-binutils: stmp/build-binutils
-	cd $(BINUTILS_BUILDDIR) ; make install DESTDIR=$(INSTALLDIR)
+	cd $(BINUTILS_BUILDDIR) ; make install
 	touch stmp/install-binutils
 
 $(GCC_BUILDDIR)/Makefile: stmp/extract-gcc
@@ -147,7 +147,7 @@ stmp/build-gcc-host: $(GCC_BUILDDIR)/Makefile
 	touch stmp/build-gcc-host
 
 stmp/install-gcc-host: stmp/build-gcc-host
-	cd $(GCC_BUILDDIR) ; make install-host DESTDIR=$(INSTALLDIR)
+	cd $(GCC_BUILDDIR) ; make install-host
 	touch stmp/install-gcc-host
 
 #GCC has trouble building target libraries in a canadian cross configuration
@@ -181,7 +181,7 @@ stmp/build-gcc-target: $(GCC_LINUXDIR)/Makefile
 	touch stmp/build-gcc-target
 
 stmp/install-gcc-target: stmp/build-gcc-target
-	cd $(GCC_LINUXDIR) ; make install-target DESTDIR=$(INSTALLDIR)
+	cd $(GCC_LINUXDIR) ; make install-target 
 	touch stmp/install-gcc-target
 
 $(WPILIB_BUILDDIR)/Makefile: stmp/extract-wpilib
