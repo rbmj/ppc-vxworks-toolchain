@@ -235,7 +235,7 @@ stmp/gccdist-scripts: stmp/gccdist-directories
 
 stmp/gccdist-headers: stmp/gccdist-directories
 	cp -dpr --no-preserve=ownership $(GCCDIST_ARCHIVE_BASE)/target/h/. $(TOOL_DIR)/sys-include
-	cp -r $(TOOL_DIR)/wrn/coreip/. $(WIND_BASE)/target/h
+	cp -r $(TOOL_DIR)/sys-include/wrn/coreip/. $(WIND_BASE)/target/h
 	touch stmp-gccdist-headers
 	touch stmp/gccdist-headers
 
