@@ -107,7 +107,7 @@ stmp/extract-gccdist: stmp/download-gccdist
 $(BINUTILS_BUILDDIR)/Makefile: stmp/extract-binutils
 	mkdir -p $(BINUTILS_BUILDDIR)
 	cd $(BINUTILS_BUILDDIR) ; $(BINUTILS_SRCDIR)/configure \
-		--prefix=$(PREFIX) \
+		--prefix=$(INSTALLDIR)$(PREFIX) \
 		--build=$(shell $(BINUTILS_SRCDIR)/config.guess) \
 		--target=$(TARGET) \
 		--host=i686-w64-mingw32
@@ -123,7 +123,7 @@ stmp/install-binutils: stmp/build-binutils
 $(GCC_BUILDDIR)/Makefile: stmp/extract-gcc
 	mkdir -p $(GCC_BUILDDIR)
 	cd $(GCC_BUILDDIR) ; $(GCC_SRCDIR)/configure \
-		--prefix=$(PREFIX) \
+		--prefix=$(INSTALLDIR)$(PREFIX) \
 		--build=$(shell $(GCC_SRCDIR)/config.guess) \
 		--target=$(TARGET) \
 		--host=i686-w64-mingw32 \
@@ -158,7 +158,7 @@ $(GCC_LINUXDIR)/Makefile: stmp/extract-gcc
 
 	export CFLAGS_FOR_TARGET="-g -O2 -mlongcall"
 	cd $(GCC_LINUXDIR) ; $(GCC_SRCDIR)/configure \
-		--prefix=$(PREFIX) \
+		--prefix=$(INSTALLDIR)$(PREFIX) \
 		--target=$(TARGET) \
 		--with-gnu-as \
 		--with-gnu-ld \
