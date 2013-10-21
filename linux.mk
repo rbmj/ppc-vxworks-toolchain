@@ -24,8 +24,6 @@ TARGET=powerpc-wrs-vxworks
 WINDIR=$(CURDIR)/win32
 INSTALLDIR=$(WINDIR)/install-prefix
 
-PATCHDIR=$(CURDIR)/patches
-
 GCC_DOWNLOAD_URL=http://ftp.gnu.org/gnu/gcc/gcc-4.8.2/gcc-4.8.2.tar.gz
 GCC_EXTRACTNAME=gcc-4.8.2
 
