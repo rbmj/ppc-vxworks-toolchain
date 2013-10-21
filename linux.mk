@@ -26,8 +26,8 @@ INSTALLDIR=$(WINDIR)/install-prefix
 
 PATCHDIR=$(CURDIR)/patches
 
-GCC_DOWNLOAD_URL=http://ftp.gnu.org/gnu/gcc/gcc-4.8.1/gcc-4.8.1.tar.gz
-GCC_EXTRACTNAME=gcc-4.8.1
+GCC_DOWNLOAD_URL=http://ftp.gnu.org/gnu/gcc/gcc-4.8.2/gcc-4.8.2.tar.gz
+GCC_EXTRACTNAME=gcc-4.8.2
 
 BINUTILS_DOWNLOAD_URL=http://ftp.gnu.org/gnu/binutils/binutils-2.23.1.tar.gz
 BINUTILS_EXTRACTNAME=binutils-2.23.1
