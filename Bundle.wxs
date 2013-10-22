@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'
+     xmlns:bal='http://schemas.microsoft.com/wix/BalExtension'>
+  <?include Properties.wxi ?>
+
+  <Bundle Name='$(var.ProductName)'
+          UpgradeCode='$(var.BundleUpgradeCode)'
+          Version='$(var.Version)'
+          Manufacturer='$(var.Manufacturer)'
+          DisableModify='yes' >
+
+    <BootstrapperApplicationRef Id='WixStandardBootstrapperApplication.RtfLicense'>
+      <bal:WixStandardBootstrapperApplication
+        LicenseFile='license.rtf'
+        SuppressOptionsUI='yes' />
+    </BootstrapperApplicationRef>
+    <Chain>
+      <MsiPackage
+        SourceFile='$(var.InstallerName)' />
+    </Chain>
+  </Bundle>
+</Wix>

@@ -1,12 +1,15 @@
 <?xml version='1.0' encoding='utf-8'?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
-  <Product Name='FRCToolchain' Id='{DEC1F45F-2A07-4264-9C7F-C058891F03DA}'
-           UpgradeCode='{468A3C37-3DD8-4EBA-B789-DBE8BBC8329B}' Language='1033'
-           Codepage='1252' Version='14.1.0' Manufacturer='FIRST'>
-    
+  <?include Properties.wxi ?>
+
+  <Product Name='$(var.ProductName)' Id='$(var.ProductCode)'
+           UpgradeCode='$(var.MsiUpgradeCode)' Language='1033'
+           Codepage='1252' Version='$(var.Version)' Manufacturer='$(var.Manufacturer)'>
+
     <Package Id='*' Keywords='Installer' Description='FIRST VxWorks Toolchain Installer'
              Manufacturer='FIRST' InstallerVersion='100' Languages='1033'
              Compressed='yes' SummaryCodepage='1252' InstallScope='perMachine' />
+
     <Media Id='1' Cabinet='Files.cab' EmbedCab='yes' DiskPrompt='Disc 1' />
     <Property Id='DiskPrompt' Value='FIRST VxWorks Toolchain Installer[1]' />
     <Property Id='INSTALLDIR' Secure='yes'>
@@ -14,25 +17,34 @@
                       Key='Software\[Manufacturer]\[ProductName]'
                       Name='INSTALLDIR' Type='directory' />
     </Property>
+
+    <?if $(var.UpgradeType) = MajorUpgrade ?>
+      <MajorUpgrade DowngradeErrorMessage='A later version of [ProductName] is already installed.' />
+    <?elseif $(var.UpgradeType) != MinorUpgrade and $(var.UpgradeType) != SmallUpdate ?>
+      <?error '$(var.UpgradeType)' is not a valid upgrade type. ?>
+    <?endif ?>
+
     <Directory Id='TARGETDIR' Name='SourceDir'>
-      <Directory Id='INSTALLDIR' Name='FRC_Toolchain'>
-        <Component Id='VxWorksToolchainEnviron' Guid='{056AF460-DA96-445B-BD83-89746DEA7DBE}'>
-          <Environment Id='PATH' Name='PATH' Value='[INSTALLDIR]\mingw\bin' Permanent='no'
-                       Part='last' Action='set' System='yes' />
-          <Environment Id='WIND_BASE' Name='WIND_BASE' Value='[INSTALLDIR]\mingw\powerpc-wrs-vxworks\wind_base'
-                       Permanent='no' Part='all' Action='set' System='yes' />
-          <RegistryKey Root='HKLM' Key='Software\[Manufacturer]\[ProductName]' >
-            <RegistryValue Id='RegistryInstallValue' Type='string' Name='INSTALLDIR'
-                           Value='[INSTALLDIR]' />
-          </RegistryKey>
-          <RegistryKey Root='HKLM' Key='Software\Kitware\CMake\Packages\WPILib' >
-            <RegistryValue Id='WPILibRegistryKey' Type='string'  Name='ConfigLocation'
-                           Value='[INSTALLDIR]\mingw\share\WPILib\cmake' />
-          </RegistryKey>
-          <CreateFolder /> <!-- Force creation to get rid of error -->
-        </Component>
+      <Directory Id='ProgramFilesFolder'>
+        <Directory Id='INSTALLDIR' Name='FRC_Toolchain'>
+          <Component Id='VxWorksToolchainEnviron' Guid='{056AF460-DA96-445B-BD83-89746DEA7DBE}'>
+            <Environment Id='PATH' Name='PATH' Value='[INSTALLDIR]\mingw\bin' Permanent='no'
+                         Part='last' Action='set' System='yes' />
+            <Environment Id='WIND_BASE' Name='WIND_BASE' Value='[INSTALLDIR]\mingw\powerpc-wrs-vxworks\wind_base'
+                         Permanent='no' Part='all' Action='set' System='yes' />
+            <RegistryKey Root='HKLM' Key='Software\[Manufacturer]\[ProductName]' >
+              <RegistryValue Id='RegistryInstallValue' Type='string' Name='INSTALLDIR'
+                             Value='[INSTALLDIR]' />
+            </RegistryKey>
+            <RegistryKey Root='HKLM' Key='Software\Kitware\CMake\Packages\WPILib' >
+              <RegistryValue Id='WPILibRegistryKey' Type='string'  Name='ConfigLocation'
+                             Value='[INSTALLDIR]\mingw\share\WPILib\cmake' />
+            </RegistryKey>
+          </Component>
+        </Directory>
       </Directory>
     </Directory>
+
     <Feature Id='Complete' Title='FRC Toolchain' Description='The complete toolchain'
              Level='1' Display='expand' ConfigurableDirectory='INSTALLDIR'>
       <Feature Id='Base' Title='Base Toolchain Files' Description='GCC, Binutils, Headers'
@@ -42,7 +54,7 @@
         <ComponentRef Id='VxWorksToolchainEnviron' />
       </Feature>
     </Feature>
-    
+
     <UI Id='ProjectUI'>
       <UIRef Id='WixUI_InstallDir' />
     </UI>
