@@ -12,10 +12,10 @@ A directory both can access to put this in (3.5 GB disk space required).
 Internet access.
 
 COMPILING:
- - Run make -f linux.mk on the linux machine
- - Run mingw32-make -f windows.mk on the windows machine
+ - Run make on the linux machine
+ - Run build.bat on the windows machine
 
-This will result in a MSI in the directory.
+This will result in a MSI in the wix-build directory.
 
 Currently, installation takes up about 500MB on the final machine.
 
