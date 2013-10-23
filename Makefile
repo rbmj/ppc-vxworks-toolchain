@@ -18,6 +18,7 @@ clean:
 	rm -rf win32
 	rm -rf stmp
 	rm -rf wix-build
+	rm -f *.exe *.dll
 
 PREFIX=/mingw
 TARGET=powerpc-wrs-vxworks

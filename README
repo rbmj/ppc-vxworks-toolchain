@@ -1,23 +1,23 @@
 BUILD REQUIREMENTS:
 
-A Linux Machine with:
+A Linux machine with:
  - mingw-w64
- - The entire linux version of the toolchain working
+ - the entire Linux version of the toolchain working
  - standard build utilities
 
-A windows machine with:
+A Windows machine with:
  - WiX
 
-A directory both can access to put this in (3.5 GB disk space required).
-Internet access.
+- A directory both can access in which to put this (3.5GB disk space required).
+- Internet access.
 
 COMPILING:
- - Run make on the linux machine
- - Run build.bat on the windows machine
+ - Run make on the Linux machine
+ - Run build.bat on the Windows machine
 
-This will result in a MSI in the wix-build directory.
+This will result in an EXE in the wix-build directory.
 
-Currently, installation takes up about 500MB on the final machine.
+Currently, installation takes up about 555MB on the final machine.
 
 TODO:
  - Test (priority: high)
