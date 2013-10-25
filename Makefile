@@ -157,8 +157,7 @@ stmp/install-gcc-host: stmp/build-gcc-host
 $(GCC_LINUXDIR)/Makefile: stmp/extract-gcc
 	mkdir -p $(GCC_LINUXDIR)
 
-	export CFLAGS_FOR_TARGET="-g -O2 -mlongcall"
-	cd $(GCC_LINUXDIR) ; $(GCC_SRCDIR)/configure \
+	cd $(GCC_LINUXDIR) ; CFLAGS_FOR_TARGET="-g -O2 -mlongcall" $(GCC_SRCDIR)/configure \
 		--prefix=$(INSTALLDIR)$(PREFIX) \
 		--target=$(TARGET) \
 		--with-gnu-as \
