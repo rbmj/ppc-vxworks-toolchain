@@ -21,4 +21,3 @@ Currently, installation takes up about 555MB on the final machine.
 
 TODO:
  - Test (priority: high)
- - Fix "Relocation value does not fit in 24 bits." error on 8 slot cRIOs (priority: high)
